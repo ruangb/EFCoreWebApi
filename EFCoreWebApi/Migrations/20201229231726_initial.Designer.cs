@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EFCoreWebApi.Migrations
 {
     [DbContext(typeof(HeroContext))]
-    [Migration("20201229223317_Initial")]
-    partial class Initial
+    [Migration("20201229231726_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -45,6 +45,26 @@ namespace EFCoreWebApi.Migrations
                     b.ToTable("Battles");
                 });
 
+            modelBuilder.Entity("EFCoreWebApi.Models.BattleHero", b =>
+                {
+                    b.Property<int>("BattleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HeroId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SecretIdentityid")
+                        .HasColumnType("int");
+
+                    b.HasKey("BattleId", "HeroId");
+
+                    b.HasIndex("HeroId");
+
+                    b.HasIndex("SecretIdentityid");
+
+                    b.ToTable("BattleHeroes");
+                });
+
             modelBuilder.Entity("EFCoreWebApi.Models.Hero", b =>
                 {
                     b.Property<int>("id")
@@ -52,17 +72,35 @@ namespace EFCoreWebApi.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("BattleId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.HasIndex("BattleId");
-
                     b.ToTable("Heroes");
+                });
+
+            modelBuilder.Entity("EFCoreWebApi.Models.SecretIdentity", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("HeroId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RealName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("HeroId");
+
+                    b.ToTable("SecretIdentities");
                 });
 
             modelBuilder.Entity("EFCoreWebApi.Models.Weapon", b =>
@@ -85,18 +123,32 @@ namespace EFCoreWebApi.Migrations
                     b.ToTable("Weapons");
                 });
 
-            modelBuilder.Entity("EFCoreWebApi.Models.Hero", b =>
+            modelBuilder.Entity("EFCoreWebApi.Models.BattleHero", b =>
                 {
                     b.HasOne("EFCoreWebApi.Models.Battle", "Battle")
-                        .WithMany()
+                        .WithMany("BattleHeroes")
                         .HasForeignKey("BattleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("EFCoreWebApi.Models.Hero", "Hero")
+                        .WithMany("BattleHeroes")
+                        .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EFCoreWebApi.Models.SecretIdentity", "SecretIdentity")
+                        .WithMany()
+                        .HasForeignKey("SecretIdentityid");
+
                     b.Navigation("Battle");
+
+                    b.Navigation("Hero");
+
+                    b.Navigation("SecretIdentity");
                 });
 
-            modelBuilder.Entity("EFCoreWebApi.Models.Weapon", b =>
+            modelBuilder.Entity("EFCoreWebApi.Models.SecretIdentity", b =>
                 {
                     b.HasOne("EFCoreWebApi.Models.Hero", "Hero")
                         .WithMany()
@@ -105,6 +157,29 @@ namespace EFCoreWebApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Hero");
+                });
+
+            modelBuilder.Entity("EFCoreWebApi.Models.Weapon", b =>
+                {
+                    b.HasOne("EFCoreWebApi.Models.Hero", "Hero")
+                        .WithMany("Weapons")
+                        .HasForeignKey("HeroId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Hero");
+                });
+
+            modelBuilder.Entity("EFCoreWebApi.Models.Battle", b =>
+                {
+                    b.Navigation("BattleHeroes");
+                });
+
+            modelBuilder.Entity("EFCoreWebApi.Models.Hero", b =>
+                {
+                    b.Navigation("BattleHeroes");
+
+                    b.Navigation("Weapons");
                 });
 #pragma warning restore 612, 618
         }

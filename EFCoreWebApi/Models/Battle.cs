@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EFCoreWebApi.Models
 {
@@ -16,5 +14,7 @@ namespace EFCoreWebApi.Models
         public DateTime BeginDate{ get; set; }
 
         public DateTime EndDate{ get; set; }
+
+        public IEnumerable<BattleHero> BattleHeroes { get; set; }
     }
 }

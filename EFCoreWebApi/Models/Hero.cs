@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace EFCoreWebApi.Models
 {
@@ -11,8 +8,9 @@ namespace EFCoreWebApi.Models
 
         public string Name { get; set; }
 
-        public int BattleId{ get; set; }
+        public IEnumerable<Weapon> Weapons { get; set; }
 
-        public Battle Battle{ get; set; }
+        public IEnumerable<BattleHero> BattleHeroes { get; set; }
+
     }
 }
